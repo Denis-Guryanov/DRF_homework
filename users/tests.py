@@ -1,13 +1,17 @@
 import json
+from datetime import timedelta
+
 import stripe
 from unittest import mock
 from django.urls import reverse
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 from courses.models import Course
 from users.models import User, Payment
-
+from users.tasks import deactivate_inactive_users
+from django.contrib.auth import get_user_model
 
 class StripePaymentTests(TestCase):
     def setUp(self):
@@ -189,3 +193,20 @@ class StripePaymentTests(TestCase):
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             self.assertIn('error', response.data)
             self.assertEqual(response.data['error'], 'Stripe error')
+
+
+class CeleryTasksTest(TestCase):
+    def test_deactivate_inactive_users(self):
+        # Создайте тестового пользователя
+        user = get_user_model().objects.create_user(
+            email='test@example.com',
+            last_login=timezone.now() - timedelta(days=31)
+        )
+
+        # Выполните задачу
+        result = deactivate_inactive_users.delay().get()
+
+        # Проверьте результат
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+        self.assertIn("Деактивировано пользователей: 1", result)

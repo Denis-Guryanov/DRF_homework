@@ -1,3 +1,5 @@
+from django.utils import timezone
+from datetime import timedelta
 from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -9,6 +11,7 @@ from . import permissions
 from .models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer, CourseDetailSerializer
 from .paginators import LessonPagination, CoursePagination
+from .tasks import send_course_update_notification
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
@@ -32,6 +35,18 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        # Проверка времени последнего обновления (доп. задание)
+        now = timezone.now()
+        last_update = instance.updated_at if instance.updated_at else instance.created_at
+
+        # Если обновление было более 4 часов назад
+        if (now - last_update) > timedelta(hours=4):
+            # Асинхронная отправка уведомлений
+            send_course_update_notification.delay(instance.id)
 
     @action(detail=True, methods=['post', 'delete'])
     def subscribe(self, request, pk=None):

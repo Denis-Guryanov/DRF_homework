@@ -14,6 +14,7 @@ class Course(models.Model):
         blank=True,
         related_name='courses'
     )
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
