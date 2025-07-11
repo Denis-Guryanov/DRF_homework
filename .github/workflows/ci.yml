@@ -18,16 +18,24 @@ jobs:
           python-version: '3.11'
 
       - name: Install Poetry
-        run: pip install poetry
+        run: |
+          pip install poetry==1.7.1
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create false
 
       - name: Install dependencies
-        run: poetry install
+        run: |
+          poetry install --no-interaction --no-ansi
 
       - name: Run migrations (sqlite)
-        run: poetry run python manage.py migrate
+        run: |
+          poetry run python manage.py migrate
 
       - name: Run tests
-        run: poetry run python manage.py test
+        run: |
+          poetry run python manage.py test
 
   deploy:
     needs: test
