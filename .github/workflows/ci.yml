@@ -17,6 +17,9 @@ jobs:
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > .env
           echo "DEBUG=1" >> .env
 
+      - name: Print .env (debug)
+        run: cat .env
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -74,4 +77,3 @@ jobs:
             docker-compose pull || true
             docker-compose up -d --build
 
-            
