@@ -35,10 +35,6 @@ jobs:
         run: |
           poetry install --no-interaction --no-ansi
 
-      - name: Show installed packages (debug)
-        run: |
-          poetry show
-
       - name: Run migrations (sqlite)
         run: |
           poetry run python manage.py migrate
@@ -78,3 +74,4 @@ jobs:
             docker-compose pull || true
             docker-compose up -d --build
 
+            
