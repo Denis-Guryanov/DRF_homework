@@ -29,10 +29,14 @@ services:
       - redis
     environment:
       - DEBUG=1
-      - DJANGO_DB_HOST=db
-      - DJANGO_DB_NAME=drf_homework
-      - DJANGO_DB_USER=drf_user
-      - DJANGO_DB_PASSWORD=drf_password
+      - DB_HOST=db
+      - DB_NAME=drf_homework
+      - DB_USER=drf_user
+      - DB_PASSWORD=drf_password
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
       - CELERY_BROKER_URL=redis://redis:6379/0
 
   celery:
@@ -44,10 +48,14 @@ services:
       - db
       - redis
     environment:
-      - DJANGO_DB_HOST=db
-      - DJANGO_DB_NAME=drf_homework
-      - DJANGO_DB_USER=drf_user
-      - DJANGO_DB_PASSWORD=drf_password
+      - DB_HOST=db
+      - DB_NAME=drf_homework
+      - DB_USER=drf_user
+      - DB_PASSWORD=drf_password
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
       - CELERY_BROKER_URL=redis://redis:6379/0
 
   celery-beat:
@@ -59,10 +67,14 @@ services:
       - db
       - redis
     environment:
-      - DJANGO_DB_HOST=db
-      - DJANGO_DB_NAME=drf_homework
-      - DJANGO_DB_USER=drf_user
-      - DJANGO_DB_PASSWORD=drf_password
+      - DB_HOST=db
+      - DB_NAME=drf_homework
+      - DB_USER=drf_user
+      - DB_PASSWORD=drf_password
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
       - CELERY_BROKER_URL=redis://redis:6379/0
 
 volumes:
