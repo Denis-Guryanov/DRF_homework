@@ -2,9 +2,15 @@ name: Django CI/CD
 
 on:
   push:
-    branches: [develop, main, master]
+    branches:
+      - develop
+      - main
+      - master
   pull_request:
-    branches: [develop, main, master]
+    branches:
+      - develop
+      - main
+      - master
 
 jobs:
   test:
@@ -46,7 +52,7 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
